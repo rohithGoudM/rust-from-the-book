@@ -1,0 +1,1 @@
+/Users/rohithgoud/Documents/projects/rust_the_book/chapter12/minigrep/target/debug/minigrep: /Users/rohithgoud/Documents/projects/rust_the_book/chapter12/minigrep/src/lib.rs /Users/rohithgoud/Documents/projects/rust_the_book/chapter12/minigrep/src/main.rs
