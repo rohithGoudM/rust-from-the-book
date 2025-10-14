@@ -1,0 +1,7 @@
+use rand;
+
+fn main() {
+    let x = 4;
+    println!("Hello, world!, {x} plus one is {}", add_one::add_one(x));
+    println!({x} plus two is {}", add_two::add_two(x));
+}
