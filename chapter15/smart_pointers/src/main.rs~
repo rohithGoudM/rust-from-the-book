@@ -1,0 +1,80 @@
+use std::ops::Deref;
+use crate::List::{Cons, Nil};
+use std::rc::Rc;
+
+// enum List {
+// 	Cons(i32, Box<List>),
+// 	Nil,
+// }
+
+enum List{
+	Cons(i32, Rc<List>),
+	Nil,
+}
+
+struct MyBox<T>(T);
+
+impl<T> MyBox<T> {
+	pub fn new(x: T) -> MyBox<T>{
+		MyBox(x)
+	}
+}
+
+impl<T> Deref for MyBox<T> {
+	type Target = T;
+	
+	fn deref(&self) -> &Self::Target {
+		&self.0
+	}
+
+}
+
+fn hello(name: &str) {
+	println!("Hello {name}");
+}
+
+struct CustomPrinter {
+	body: String,
+}
+
+impl Drop for CustomPrinter {
+	fn drop(&mut self) {
+		println!("Dropping {}", self.body);
+	}
+}
+
+fn main() {
+	// let _list = Cons(1, Box::new(Cons(2, Box::new(Cons(3, Box::new(Nil))))));
+	let x = 5;
+	let y: &i32 = &x;
+
+	assert_eq!(x, 5);
+	assert_eq!(*y, 5);
+	
+	let b: Box<i32> = Box::new(5);
+	assert_eq!(*b, 5);
+
+	let m = MyBox::new(5);
+	assert_eq!(*m, 5);
+	
+	let name = MyBox::new(String::from("Rohith"));
+	hello(&name);
+	hello(&((*name)[..]));
+
+	let _cp = CustomPrinter{
+		body: String::from("first shipment"),
+	};
+	let _cp = CustomPrinter{
+		body: String::from("second shipment"),
+	};
+	println!("Created Custom Printer");
+	
+	let a = Rc::new(Cons(5, Rc::new(Cons(10, Rc::new(Nil)))));
+	let b = Rc::new(Cons(3, Rc::clone(&a)));
+	println!("{}", Rc::strong_count(&a));
+	{
+		let c = Rc::new(Cons(4, Rc::clone(&a)));
+	}
+	println!("{}", Rc::strong_count(&a));
+}
+
