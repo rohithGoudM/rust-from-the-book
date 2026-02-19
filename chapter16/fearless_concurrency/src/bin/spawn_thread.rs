@@ -1,0 +1,19 @@
+use std::time::Duration;
+use std::thread;
+
+fn main() {
+	let v = vec![1,2,3];
+
+	thread::spawn(move || {
+		println!("{v:?}");
+		for i in 1..10 {
+			println!("{i} from spawned thread");
+			thread::sleep(Duration::from_millis(2));
+		}
+	});
+	
+	for i in 1..5 {
+		println!("{i} from spawned thread");
+		thread::sleep(Duration::from_millis(2));
+	}
+}
