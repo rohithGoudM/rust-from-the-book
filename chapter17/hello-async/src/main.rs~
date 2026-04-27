@@ -1,23 +1,37 @@
 use std::future::Future;
-use trpl::{Html,block_on};
+use trpl::{Html,block_on,select,Either};
 
 fn main() {
 	let args: Vec<String> = std::env::args().collect();
-	let url = &args[1];
-	block_on(async move {
-		match page_title(url).await {
-			Some(title) => println!("the title for {url} is {title}"),
-			None => println!("{url} has no title."),
-		}
+	let first_url  = &args[1];
+	let second_url = &args[2];
+
+	block_on(async {
+		let page_title_1 = page_title(first_url);
+		let page_title_2 = page_title(second_url);
+		
+		let (url, title) = match select(page_title_1, page_title_2).await {
+			Either::Left(left)   => left,
+			Either::Right(right) => right,
+		};
+		
+		println!("{url} was faster");
+		match title {
+			Some(title_won) => println!("Title from the faster url is {title_won}"),
+			None 			=> println!("Couldn't find the title in the url")
+		};
+		
 	})
 }
 
 
-async fn page_title(url: &str) -> Option<String> {
+async fn page_title(url: &str) -> (&str, Option<String>) {
 	let response_text = trpl::get(url).await.text().await;
-	Html::parse(&response_text)
+	let title = Html::parse(&response_text)
 		.select_first("title")
-		.map(|title| title.inner_html())
+		.map(|title| title.inner_html());
+
+	(url, title)
 }
 
 fn compiled_page_title(url: &str) -> impl Future <Output = Option<String>> {
