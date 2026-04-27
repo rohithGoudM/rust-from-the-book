@@ -1,0 +1,16 @@
+use std::any::type_name_of_val;
+use std::sync::Mutex;
+
+fn main() {
+    println!("Hello, world!");
+	let i = Mutex::new(5);
+	println!("{}",type_name_of_val(&i));
+	{
+		let h = i.lock();
+		// let j = h.unwrap();
+		// println!("{}",j);
+		println!("{}",type_name_of_val(&h));
+		// println!("{}",type_name_of_val(&j));
+
+	}
+}
