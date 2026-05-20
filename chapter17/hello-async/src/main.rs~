@@ -10,15 +10,15 @@ fn main() {
 		let page_title_1 = page_title(first_url);
 		let page_title_2 = page_title(second_url);
 		
-		let (url, title) = match select(page_title_1, page_title_2).await {
+		let (url, title_won) = match select(page_title_1, page_title_2).await {
 			Either::Left(left)   => left,
 			Either::Right(right) => right,
 		};
 		
 		println!("{url} was faster");
-		match title {
-			Some(title_won) => println!("Title from the faster url is {title_won}"),
-			None 			=> println!("Couldn't find the title in the url")
+		match title_won {
+			Some(title) => println!("Title from the faster url is {title}"),
+			None 		=> println!("Couldn't find the title in the url")
 		};
 		
 	})
